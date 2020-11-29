@@ -2,18 +2,17 @@ clear all; close all; clc;
 
 %% INIT 
 
-simulation=2;
-
-nb_it= 5; % 1 iteration = v_toc + c_to_v
-iterations=1;
+simulation=1; %% FAIRE 10 itéerations BP %Optimiser MIN_SUM fontcion, revoir TEUBs comme mtnt je connais, plot
+                % condition arrêt fonction
+nb_it= 10; % 1 iteration = v_toc + c_to_v
 
 bruit=0;
 voir=1;
 
 if simulation==1
-    [H] = alist2sparse('alist/DEBUG_6_3.alist');
+    [H] = alist2sparse('alist/DEBUG_6_3.alist');  %3 noeuds de parité 6 noeuds de variables
 elseif simulation==2
-    [H] = alist2sparse('alist/CCSDS_64_128.alist');
+    [H] = alist2sparse('alist/CCSDS_64_128.alist'); %64 noeuds de parité 128 noeuds de variables
 else
     [H] = alist2sparse('alist/MACKAY_504_1008.alist');
 end
@@ -23,6 +22,9 @@ H_full = full(H);
 [m, n] = size(H_full);
 
 msg_envoye= randi([0 1],1,m);
+% msg_envoye= ones(1,m);
+% msg_envoye= zeros(1,m);
+
 %% Travail 1
 
 %H n'est pas régulière car:
@@ -43,7 +45,7 @@ end
 
 %% 1st COM Pour voir faire un décodeur qui fonctionne %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-M = 4; % Modulation BPSK <=> 2 symboles 0 ou 1
+M = 2; % Modulation BPSK <=> 2 symboles 0 ou 1
 phi0 = 0; % Offset de phase our la BPSK
 
 mod_psk = comm.PSKModulator(...
@@ -61,12 +63,12 @@ demod_psk = comm.PSKDemodulator(...
 
 R = 1; % Rendement de la communication
 R = (n-gfrank(H_full))/n;
-EbN0dB_min  = -2; % Minimum de EbN0
+EbN0dB_min  = 10; % Minimum de EbN0
 EbN0dB_max  = 10; % Maximum de EbN0
 EbN0dB_step = 1;% Pas de EbN0
 
 EbN0dB = EbN0dB_min:EbN0dB_step:EbN0dB_max;     % Points de EbN0 en dB à simuler
-EbN0   = 10.^(EbN0dB/10);% Points de EbN0 à simuler
+EbN0   = 10.^(EbN0dB/10);% Points de EbN0 à simuler   %ON SE MET SNR TROP bien
 EsN0   = R*log2(M)*EbN0; % Points de EsN0
 EsN0dB = 10*log10(EsN0); % Points de EsN0 en dB à simuler
 
@@ -76,22 +78,6 @@ awgn_channel = comm.AWGNChannel(...
     'SignalPower',1);
 
 %% encode
-u1 = [1 1 1];
-u2 = [0 0 0];
-u3 = [1 0 1];
-k=3;
-n=6;
-
-
-% msg_envoye = [1;1;0;1;1;1];
-
-encode_fonction=1;
-if encode_fonction==0
-    c1=msg_envoye*g;
-    c1=mod(c1,2); %xor => 1+1 = 0 ; 1+0=1 => msg en clair sur 3 derniers bits
-    %verif mod(c1 * H_full',2)
-    msg_code=c1';
-end
 
 [msg_code] = encode_LDPC(g,msg_envoye);
 
@@ -119,7 +105,7 @@ if voir==1
 msg_envoye=msg_envoye'
 res_final
 msg_decode
-diff_entre_msg_envoye_msg_recu = find(msg_envoye~=msg_decode);
+diff_entre_msg_envoye_msg_recu = find(msg_envoye~=msg_decode)
 nb_differences=length(diff_entre_msg_envoye_msg_recu)
 end
 msg_recu_egal_msg_envoye=isequal(msg_envoye,msg_decode)*1
@@ -130,6 +116,7 @@ msg_recu_egal_msg_envoye=isequal(msg_envoye,msg_decode)*1
 
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%ù
 
 %%% TEST POUR CREER LA FONCTION DE DECODAGE %%%% c'est OK on va plus là dedans
 juste_fonctions=1;
@@ -137,7 +124,22 @@ juste_fonctions=1;
 
 if juste_fonctions==0
     
-    
+iterations=0;
+
+u1 = [1 1 1];
+u2 = [0 0 0];
+u3 = [1 0 1];
+k=3;
+n=6;
+% msg_envoye = [1;1;0;1;1;1];
+
+encode_fonction=1;
+if encode_fonction==0
+    c1=msg_envoye*g;
+    c1=mod(c1,2); %xor => 1+1 = 0 ; 1+0=1 => msg en clair sur 3 derniers bits
+    %verif mod(c1 * H_full',2)
+    msg_code=c1';
+end    
     
     
     

@@ -34,12 +34,13 @@ c_to_v = zeros(m,n);
 
 
 canal_obs=msg_a_decode_paquet_colloned(:,num_paquet);
+ 
+%%%%%%%%%%%%%%% INIT / CANAL OBSERVATION %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
-%%%%%%%%%%%%%%% INIT / CANAL OBSERVATION %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 for i = 1:nb_v % On init le decodeur avec les observations ducanal
     
-    v_tmp=i; %le numero du v
-    v_obs=canal_obs(v_tmp); %observation d'un v
+    v_tmp=i; %le numero du v                      
+    v_obs=canal_obs(v_tmp); %observation d'un v    
     
     nb_aretes_V_vers_Ci=sum(H_full(:,v_tmp)); %combien d'arêtes à le V concerné
     
@@ -83,9 +84,8 @@ for c_tmp2 =1:nb_c
 end
 
 %On s'arrête et on regarde les valeurs finales sur les noeuds de variables
-%V, en sommant juste ce qu'on reçoit des noeuds de parités C + observation
-%du canal
-res=sum(c_to_v')'+canal_obs; %ligne magique de fin
+%V, en sommant juste ce qu'on reçoit des noeuds de parités C 
+res=sum(c_to_v')'+canal_obs; %ligne magique de fin (+ observation du canal)
 % on voit bien que la valeurs des V a changé après une itération en
 % creusant l'écart pour la décision, yes!
 
@@ -116,8 +116,16 @@ end
 if iterations ==1
     
     for i = 2:nb_iterations
-        
-        
+        i;
+        c_to_v(isnan(c_to_v)==1)=0;
+        v_to_c(isnan(v_to_c)==1)=0;
+
+%         c_to_v(c_to_v==-Inf) = -1;
+%         c_to_v(c_to_v==Inf) = 1;
+%         
+%         v_to_c(v_to_c==-Inf) = -1;
+%         v_to_c(v_to_c==Inf) = 1;
+%         
         %On calcul ce qu'on reçoit sur les c
         for c_tmp2 =1:nb_c
     
@@ -142,9 +150,9 @@ if iterations ==1
     
         
         %On remets a jour les V
-        for i = 1:nb_v % On init le decodeur avec les observations ducanal
+        for v_num = 1:nb_v % On init le decodeur avec les observations ducanal
     
-            v_tmp=i; %le numero du v
+            v_tmp=v_num; %le numero du v
             v_obs=res(v_tmp); % resultat d'un v
 
             nb_aretes_V_vers_Ci=sum(H_full(:,v_tmp)); %combien d'arêtes à le V concerné

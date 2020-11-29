@@ -9,10 +9,12 @@ clc
 
 addpath('src')
 
-nb_iterations_LDPC=5;
+nb_iterations_LDPC=10;
 
 %FORT SNR, sigma2 très petit, regarder les NaN = corriger
 simulation_test=1
+
+MIN_SUM=0;
 
 voir=0; 
 
@@ -21,17 +23,26 @@ if simulation_test==1
     [H] = alist2sparse('alist/DEBUG_6_3.alist');
     simulation_name = 'DEBUG_6_3';
     bit_par_pqt   = 330;% Nombre de bits par paquet
+    if MIN_SUM ==1
+        simulation_name = 'DEBUG_6_3_MIN_SUM';
+    end
 
 elseif simulation_test==2
     simulation_test
     [H] = alist2sparse('alist/CCSDS_64_128.alist');
     simulation_name = 'CCSDS_64_128';
-    bit_par_pqt   = 128;
+    bit_par_pqt   = 64;
+    if MIN_SUM ==1
+        simulation_name = 'CCSDS_64_128_MIN_SUM';
+    end
 else
     [H] = alist2sparse('alist/MACKAY_504_1008.alist');
     simulation_test
     simulation_name = 'MACKAY_504_1008';
     bit_par_pqt   = 55440;
+    if MIN_SUM ==1
+        simulation_name = 'MACKAY_504_1008_MIN_SUM';
+    end
 end
 
 [h, g] = ldpc_h2g(H); % g = matrice genereatrice
@@ -40,14 +51,13 @@ H_full = full(H);
 [m, n] = size(H_full);
 % R = 1; % Rendement de la communication
 R=(n-gfrank(H_full))/n;
-bit_par_pqt=m;
+% bit_par_pqt=m;
 pqt_par_trame = 1; % Nombre de paquets par trame
 K = pqt_par_trame*bit_par_pqt; % Nombre de bits de message par trame
 N = K/R; % Nombre de bits codés par trame (codée)
 
 M = 2; % Modulation BPSK <=> 2 symboles
 phi0 = 0; % Offset de phase our la BPSK
-
 EbN0dB_min  = -2; % Minimum de EbN0
 EbN0dB_max  = 10; % Maximum de EbN0
 EbN0dB_step = 1;% Pas de EbN0

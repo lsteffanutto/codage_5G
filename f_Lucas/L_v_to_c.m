@@ -1,6 +1,6 @@
 function [res_L_v_to_c] = L_v_to_c( canal_obs, H_full, c_to_v, indice_V,indice_C_final)
 % donne LLR d'un V qui arrive sur un C
-
+c_to_v(isnan(c_to_v)==1)=0;
 
 indices_des_co = C_2_Vk(H_full, indice_V); %On cherche les indices des V_k connectés à C
 
@@ -22,15 +22,24 @@ for i = 1:nb_v_voisins_info+1 % On parcourt les noeuds de variables reliés à c
     if i == nb_v_voisins_info+1    % LLR observation du canal (on la somme en dernier)
         canal_obs;
         sum_LLR = sum_LLR + canal_obs;
+        
+        if isnan(sum_LLR)*1==1   %GERE LE CAS NAN
+            sum_LLR=0;
+        end
+        
     else
         indices_des_co(i);
         L = c_to_v(indices_des_co(i),indice_V);
         sum_LLR = sum_LLR + L; % LLR info des Ck
+        
+        if isnan(sum_LLR)*1==1  %GERE LE CAS NAN
+            sum_LLR=0;
+        end
+        
     end
     
 end
 
-% on applique la formule pour le produit des tangentes 2atanh(prod_tanh)
 res_L_v_to_c = sum_LLR;
 
 

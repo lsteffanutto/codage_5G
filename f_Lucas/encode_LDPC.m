@@ -11,5 +11,11 @@ msg_bien_encode=mod(msg_bien_encode,2); %en faisant attention au XOR
 
 msg_bien_encode=msg_bien_encode'; %on le remet en ligne pour la modulation
 msg_bien_encode=msg_bien_encode(:);
+
+test_encode_bien=0;
+if sum(msg_en_clair==msg_bien_encode(N+1:N*2,1)') == m
+    test_encode_bien=1;
+end
+
 end
 
