@@ -2,12 +2,14 @@ clear all; close all; clc;
 
 %% INIT 
 
-simulation=1; %% FAIRE 10 itéerations BP %Optimiser MIN_SUM fontcion, revoir TEUBs comme mtnt je connais, plot
+simulation=2; %% FAIRE 10 itéerations BP, revoir TEUBs comme mtnt je connais, plot
                 % condition arrêt fonction
-nb_it= 10; % 1 iteration = v_toc + c_to_v
+nb_it= 100; % 1 iteration = v_toc + c_to_v
 
 bruit=0;
 voir=1;
+MIN_SUM=0;
+critere_arret=1;
 
 if simulation==1
     [H] = alist2sparse('alist/DEBUG_6_3.alist');  %3 noeuds de parité 6 noeuds de variables
@@ -98,7 +100,7 @@ canal_obs = Lc;
 %ce truc faut le faire passer dans le décodeur
 %avec la matrice de parité tout ça 
 
-[msg_decode, res_final]=decodage_LDPC(H,canal_obs,nb_it); %last input = nb_iterations
+[msg_decode, res_final]=decodage_LDPC(H,canal_obs,nb_it,MIN_SUM,critere_arret); %last input = nb_iterations
 
 if voir==1
 

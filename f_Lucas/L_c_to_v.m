@@ -1,4 +1,4 @@
-function [res_L_c_to_v] = L_c_to_v(H_full, v_to_c, indice_C,indice_V_final)
+function [res_L_c_to_v] = L_c_to_v(H_full, v_to_c, indice_C,indice_V_final,MIN_SUM)
 % donne LLR d'un C qui arrive sur un V
 % LLR qui arrive sur noeuds de parité (sont tockés dans v_to_c);
 % on fait un 2atanh(...) avec les noeuds de variables qui arrivent
@@ -25,21 +25,26 @@ for i = 1:nb_v_voisins_info % On parcourt les noeuds de variables reliés à c +
     L = v_to_c(indice_C,indices_des_co(i));
     
     %MIN-SUM
-%     L_tab = [L_tab L]; %on stock les L car à la fin on va prendre le min
-%     prod_tanh = prod_tanh*sign(L); %On fait le produit de tous les L
-
-    %BP
-    prod_tanh = prod_tanh * tanh( L /2 ); % LLR info des Vk
+    if MIN_SUM==1
+        L_tab = [L_tab L]; %on stock les L car à la fin on va prendre le min
+        prod_tanh = prod_tanh*sign(L); %On fait le produit de tous les sign(L)
+    
+    else %BP
+        prod_tanh = prod_tanh * tanh( L /2 ); % LLR info des Vk
+    end
     
 end
 
 %MIN-SUM
-% res_L_c_to_v=prod_tanh*min(abs(L_tab)); % on multiplie par le min des L à la fin
+if MIN_SUM==1
 
-%BP
-% on applique la formule pour le produit des tangentes 2atanh(prod_tanh)
-res_L_c_to_v = 2*atanh(prod_tanh);
+    res_L_c_to_v=prod_tanh*min(abs(L_tab)); % on multiplie par le min des L à la fin
 
+else %BP
+
+    % on applique la formule pour le produit des tangentes 2atanh(prod_tanh)
+    res_L_c_to_v = 2*atanh(prod_tanh);
+end
 
 
 

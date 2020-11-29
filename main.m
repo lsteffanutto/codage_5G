@@ -7,14 +7,15 @@ clc
 %M = 2^k = nombre de message possible
 %n = longueur du msg encodé
 
-addpath('src')
+addpath('src')              %CHANGER NOM .mat obtenu après save, sinon je vais écrire par-dessus pdt les test
 
-nb_iterations_LDPC=10;
+nb_iterations_LDPC=3
 
 %FORT SNR, sigma2 très petit, regarder les NaN = corriger
-simulation_test=1
+simulation_test=1;
 
-MIN_SUM=0;
+MIN_SUM=1
+critere_arret=1;
 
 voir=0; 
 
@@ -159,7 +160,7 @@ for i_snr = 1:length(EbN0dB)
         canal_obs=Lc';
 %         rec_b = double(Lc(1:K) < 0);   % Décision JUSTE BPSK par default
 
-        rec_b=decodage_LDPC(H,canal_obs,nb_iterations_LDPC);
+        rec_b=decodage_LDPC(H,canal_obs,nb_iterations_LDPC,MIN_SUM,critere_arret);
         
         if voir==1
         msg_recu_egal_msg_envoye=isequal(b,rec_b)*1  %voir si msg_recu=msg_envoye SANS BRUIT

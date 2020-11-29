@@ -1,5 +1,8 @@
-function [msg_recu_apres_decodage_tab, res_final_tab] = decodage_LDPC(H,canal_obs,nb_iterations)
-
+function [msg_recu_apres_decodage_tab, res_final_tab] = decodage_LDPC(H,canal_obs,nb_iterations,MIN_SUM,critere_arret)
+% condition d'arrêt: après chaque itération, on actualise les Vi et on
+% calcul => vH^T pour voir si toutes les équations de parités sont
+% vérifiées. si c'est le cas on s'arrête
+nombre_iteration_final_critere_arret=nb_iterations;
 iterations=0;
 if nb_iterations>1
     iterations=1;
@@ -60,7 +63,7 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %On calcul ce qu'on reçoit sur les c et qu'on renvoie vers les V 1ère iteration
-%L_c_to_v(H_full, v_to_c, indice_C,indice_V_final)
+%L_c_to_v(H_full, v_to_c, indice_C,indice_V_final,MIN_SUM_ou_BP,critere_arret_ou_non)
 %[c_to_v] = update_c_to_v(c_to_v, res_L_c_to_v, indice_c, indice_v_final)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -76,7 +79,7 @@ for c_tmp2 =1:nb_c
         
         v_tmp2=V_avec_lesquels_ils_sont_link(k); %numéro du v
         
-        [res_L_c_to_v] = L_c_to_v(H_full, v_to_c, c_tmp2-1,v_tmp2-1); %Co (reçoit v0 et v2 mais renvoie juste le v2) to V0
+        [res_L_c_to_v] = L_c_to_v(H_full, v_to_c, c_tmp2-1,v_tmp2-1,MIN_SUM); %Co (reçoit v0 et v2 mais renvoie juste le v2) to V0
         [c_to_v] = update_c_to_v(c_to_v, res_L_c_to_v, c_tmp2-1,v_tmp2-1);
     
     end
@@ -110,7 +113,20 @@ for i = 1:nb_v % On init le decodeur avec les observations ducanal
     end
     
 end
+%après la 1ère iteration on test le critere d'arret si il est active
+if critere_arret == 1
+    test_syndrome=syndrome(v_to_c,H_full); %On regarde si toutes les équation de parités sont vérifiés xH^T=0
+    if test_syndrome==0
+        nombre_iteration_final_critere_arret=1; %on enregistre le nb_iterations realisé au final
+    end
+end
 
+
+
+
+
+%on les fait pas si critere arrêt vérifié
+if nombre_iteration_final_critere_arret==1
 %%%%%%%%%%%%%%%%%%AUTRES ITERATIONS%%%%%%%%%%%%%%%%%%%
 
 if iterations ==1
@@ -139,7 +155,7 @@ if iterations ==1
 
                 v_tmp2=V_avec_lesquels_ils_sont_link(k); %numéro du v
 
-                [res_L_c_to_v] = L_c_to_v(H_full, v_to_c, c_tmp2-1,v_tmp2-1); %Co (reçoit v0 et v2 mais renvoie juste le v2) to V0
+                [res_L_c_to_v] = L_c_to_v(H_full, v_to_c, c_tmp2-1,v_tmp2-1,MIN_SUM); %Co (reçoit v0 et v2 mais renvoie juste le v2) to V0
                 [c_to_v] = update_c_to_v(c_to_v, res_L_c_to_v, c_tmp2-1,v_tmp2-1);
 
             end
@@ -170,13 +186,21 @@ if iterations ==1
             end
         end
         
+        %A LA FIN DE CHAQUE ITERATION ON TEST LE CRITERE D'ARRET
+        if critere_arret == 1; 
+            test_syndrome=syndrome(v_to_c,H_full); %On regarde si toutes les équation de parités sont vérifiés xH^T=0
+            if test_syndrome==0
+                nombre_iteration_final_critere_arret=i; %so on fait moins d'otérations que prévu on enregistre cenombre
+                i=nb_iterations; %on met le compteur à la fin comme ça il va s'arrêter direct et fin du decodage
+            end
+        end
         
         
-            
     end
         
-end
+end %FIN AUTRES ITERATIONS
 
+end %si on fait que 1 iteration avec critere arrêt et pas les autres
 
 test_parite=(res'<0)*1;
 res=res';
@@ -207,3 +231,6 @@ end
 res_final_tab=res_final_tab(:);
 msg_recu_apres_decodage_tab=msg_recu_apres_decodage_tab(:);
 
+nb_iterations_totales_prevues=nb_iterations;   % <=== DECOMENTE ICI POUR VOIR NB ITERATION PREVUES ET FINALE
+nombre_iteration_final_critere_arret;
+end
