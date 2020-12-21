@@ -12,8 +12,8 @@ for i=1:colonne
     x(i)=v_to_c(index_v_i_diff_0(1),i);
     
 end
-
-valeur_syndrome=x*H';
+potentiel_mot=(x<0)*1;
+valeur_syndrome=mod(potentiel_mot*H',2);
 test_syndrome = any(valeur_syndrome)*1;
 
 end

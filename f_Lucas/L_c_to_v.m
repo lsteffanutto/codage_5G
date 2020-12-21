@@ -18,7 +18,7 @@ indice_C = indice_C +1;
 indices_des_co=indices_des_co+1;
 prod_tanh = 1;
 L_tab=[];
-for i = 1:nb_v_voisins_info % On parcourt les noeuds de variables reliés à c + observation du canal
+for i = 1:nb_v_voisins_info % On parcourt les noeuds de variables reliés à C
     i;
     indice_C;
     indices_des_co(i);

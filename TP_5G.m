@@ -1,15 +1,17 @@
 clear all; close all; clc;
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%% FICHIER DEBUG %%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% INIT 
 
-simulation=2; %% FAIRE 10 itéerations BP, revoir TEUBs comme mtnt je connais, plot
-                % condition arrêt fonction
-nb_it= 100; % 1 iteration = v_toc + c_to_v
+simulation=1; 
+nb_it= 50; 
 
 bruit=0;
 voir=1;
 MIN_SUM=0;
-critere_arret=1;
+critere_arret=0;
 
 if simulation==1
     [H] = alist2sparse('alist/DEBUG_6_3.alist');  %3 noeuds de parité 6 noeuds de variables
@@ -24,7 +26,7 @@ H_full = full(H);
 [m, n] = size(H_full);
 
 msg_envoye= randi([0 1],1,m);
-% msg_envoye= ones(1,m);
+% msg_envoye= ones(1,m)
 % msg_envoye= zeros(1,m);
 
 %% Travail 1
@@ -81,9 +83,9 @@ awgn_channel = comm.AWGNChannel(...
 
 %% encode
 
-[msg_code] = encode_LDPC(g,msg_envoye);
+[msg_code] = encode_LDPC(g,msg_envoye)
 
-msg_code_mod = step(mod_psk,msg_code);      % Modulation QPSK
+msg_code_mod = step(mod_psk,msg_code)      % Modulation QPSK
 
 %% canal
 

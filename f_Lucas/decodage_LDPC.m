@@ -114,6 +114,8 @@ for i = 1:nb_v % On init le decodeur avec les observations ducanal
     
 end
 %après la 1ère iteration on test le critere d'arret si il est active
+%DABORD ON ESTIME LE DECODAGE PUIS ENSUITE ON TEST LA PARITE (LIGNE TEST
+%PARITE)
 if critere_arret == 1
     test_syndrome=syndrome(v_to_c,H_full); %On regarde si toutes les équation de parités sont vérifiés xH^T=0
     if test_syndrome==0
@@ -192,6 +194,7 @@ if iterations ==1
             if test_syndrome==0
                 nombre_iteration_final_critere_arret=i; %so on fait moins d'otérations que prévu on enregistre cenombre
                 i=nb_iterations; %on met le compteur à la fin comme ça il va s'arrêter direct et fin du decodage
+                break;
             end
         end
         

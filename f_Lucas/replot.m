@@ -1,12 +1,43 @@
 clear all; close all; clc;
 
-%% MIN-SUM
+%% critère arrêt MIN-SUM/BP 10 itérations (mais n'en fait que 2)
+figure(7)
+
+TEB_TAB_MINSUM=[]
+TEP_TAB_MINSUM=[]
+
+load('critere_arret_BP_10it_fais_que_2.mat'); %BP 10 itérations
+
+TEB_TAB_MINSUM=[TEB_TAB_MINSUM; ber];
+TEP_TAB_MINSUM=[TEP_TAB_MINSUM; paquet_err];
+
+load('critere_arret_MINSUM_10it_fais_que_2.mat'); %Min SUM 10 itérations
+
+TEB_TAB_MINSUM=[TEB_TAB_MINSUM; ber];
+TEP_TAB_MINSUM=[TEP_TAB_MINSUM; paquet_err];
+
+semilogy(EbN0dB,TEB_TAB_MINSUM(1,:),'LineWidth',1);hold on;
+semilogy(EbN0dB,TEB_TAB_MINSUM(2,:),'LineWidth',1);hold on;
+
+semilogy(EbN0dB,TEP_TAB_MINSUM(1,:),'--','LineWidth',1);hold on;
+semilogy(EbN0dB,TEP_TAB_MINSUM(2,:),'--','LineWidth',1);hold on;
+
+xlim([0 10])
+ylim([1e-6 1])
+grid on
+xlabel('$\frac{E_b}{N_0}$ en dB','Interpreter', 'latex', 'FontSize',14)
+ylabel('TEB','Interpreter', 'latex', 'FontSize',14)
+title("TEB et TEP pour BP et MIN-SUM pour 10 itérations avec critère d'arrêt");
+
+legend("TEB BP 10 itération critère d'arrêt (6,3)","TEB MIN-SUM 10 itérations critère d'arrêt (6,3)","TEP BP 10 itération critère d'arrêt (6,3)","TEP MIN-SUM 10 itérations critère d'arrêt (6,3)")
+
+%% MIN-SUM/BP 10 itérations
 figure(6)
 
 TEB_TAB_MINSUM=[]
 TEP_TAB_MINSUM=[]
 
-load('DEBUG_6_31.mat'); %BP 5 itérations, qui faut que je fasse pcq j'ai fais que 5 au max
+load('DEBUG_6_3_BP_10.mat'); %BP 10 itérations
 
 TEB_TAB_MINSUM=[TEB_TAB_MINSUM; ber];
 TEP_TAB_MINSUM=[TEP_TAB_MINSUM; paquet_err];
@@ -29,7 +60,7 @@ xlabel('$\frac{E_b}{N_0}$ en dB','Interpreter', 'latex', 'FontSize',14)
 ylabel('TEB','Interpreter', 'latex', 'FontSize',14)
 title("TEB et TEP pour BP et MIN-SUM pour 10 itérations");
 
-legend('TEB BP 1 itération (6,3)','TEB MIN-SUM 10 itérations (6,3)','TEP BP 1 itération (6,3)','TEP MIN-SUM 10 itérations (6,3)')
+legend('TEB BP 10 itération (6,3)','TEB MIN-SUM 10 itérations (6,3)','TEP BP 10 itération (6,3)','TEP MIN-SUM 10 itérations (6,3)')
 
 
 %% BP

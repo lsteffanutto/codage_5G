@@ -1,21 +1,14 @@
 %clear
 clc
 
-%% Parametres
-% -------------------------------------------------------------------------
-%k = nb bit dans un msg
-%M = 2^k = nombre de message possible
-%n = longueur du msg encodé
+%% Parametres de la simulation
 
-addpath('src')              %CHANGER NOM .mat obtenu après save, sinon je vais écrire par-dessus pdt les test
+addpath('src')              
 
-nb_iterations_LDPC=3
-
-%FORT SNR, sigma2 très petit, regarder les NaN = corriger
-simulation_test=1;
-
-MIN_SUM=1
-critere_arret=1;
+nb_iterations_LDPC=5    %CHOIX DU NOMBRE D'ITERATIONS
+simulation_test=1;      %CHOIX DU CODE
+MIN_SUM=0               %DECODAGE MIN-SUM (1) OU BP (0)
+critere_arret=0         %AJOUT DU CRITERE D'ARRET (1) OU NON (0)
 
 voir=0; 
 
