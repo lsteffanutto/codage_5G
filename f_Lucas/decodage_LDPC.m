@@ -13,7 +13,8 @@ N=length(canal_obs);
 msg_tot=canal_obs;
 
 [h, g] = ldpc_h2g(H); % g = matrice genereatrice
-H_full = full(H);
+% H_full = full(H);  
+H_full = full(h);  
 [m, n] = size(H_full);
 nb_v=n;
 nb_c=m;

@@ -5,12 +5,12 @@ clear all; close all; clc;
 
 %% INIT 
 
-simulation=1; 
-nb_it= 50; 
+simulation=3; 
+nb_it= 1; 
 
 bruit=0;
 voir=1;
-MIN_SUM=0;
+MIN_SUM=1;
 critere_arret=0;
 
 if simulation==1
@@ -23,6 +23,7 @@ end
 
 [h, g] = ldpc_h2g(H); % g = matrice genereatrice
 H_full = full(H);
+H_full = full(h);
 [m, n] = size(H_full);
 
 msg_envoye= randi([0 1],1,m);
@@ -118,8 +119,8 @@ msg_recu_egal_msg_envoye=isequal(msg_envoye,msg_decode)*1
 
 
 
-
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ANCIENS TEST
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%ù
 
 %%% TEST POUR CREER LA FONCTION DE DECODAGE %%%% c'est OK on va plus là dedans

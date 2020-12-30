@@ -5,8 +5,8 @@ clc
 
 addpath('src')              
 
-nb_iterations_LDPC=5    %CHOIX DU NOMBRE D'ITERATIONS
-simulation_test=1;      %CHOIX DU CODE
+nb_iterations_LDPC=1    %CHOIX DU NOMBRE D'ITERATIONS
+simulation_test=2;      %CHOIX DU CODE
 MIN_SUM=0               %DECODAGE MIN-SUM (1) OU BP (0)
 critere_arret=0         %AJOUT DU CRITERE D'ARRET (1) OU NON (0)
 
